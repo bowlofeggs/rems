@@ -1,0 +1,7 @@
+**/*.rs.bk
+*.swp
+.mypy_cache
+/target
+Cargo.lock
+examples/1d_signal.bson
+examples/1d_simulation.mp4

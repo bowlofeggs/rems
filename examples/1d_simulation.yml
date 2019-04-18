@@ -1,0 +1,11 @@
+---
+dimensions: 1
+signals:
+  - location: 600
+    path: examples/1d_signal.bson
+size: 1920
+time: 32768
+oscilloscopes:
+  - type: movie
+    range: 2.3
+    path: examples/1d_simulation.mp4
