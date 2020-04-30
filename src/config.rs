@@ -96,13 +96,21 @@ pub fn read_config(config_file_path: &str) -> Result<Simulation, Box<dyn error::
     Ok(config)
 }
 
-
-fn default_framerate() -> u16 {60}
-fn default_graph_period() -> u16 {16}
-fn default_range() -> f32 {1.0}
-fn default_resolution() -> (u16, u16) {(1920, 1080)}
-fn default_snapshot_buffer_len() -> u16 {47}
-
+fn default_framerate() -> u16 {
+    60
+}
+fn default_graph_period() -> u16 {
+    16
+}
+fn default_range() -> f32 {
+    1.0
+}
+fn default_resolution() -> (u16, u16) {
+    (1920, 1080)
+}
+fn default_snapshot_buffer_len() -> u16 {
+    47
+}
 
 #[derive(PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -121,24 +129,21 @@ pub struct Movie {
     pub snapshot_buffer_len: u16,
 }
 
-
 #[derive(PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "type")]
 pub enum Oscilloscope {
-    Movie(Movie)
+    Movie(Movie),
 }
-
 
 #[derive(PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[serde(rename_all = "snake_case")]
 pub struct Signal {
     pub location: usize,
-    pub path: String
+    pub path: String,
 }
-
 
 #[derive(PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -150,12 +155,11 @@ pub struct OneDSimulation {
     pub time: u64,
 }
 
-
 #[derive(PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "dimensions")]
 pub enum Simulation {
     #[serde(rename(deserialize = "1"))]
-    OneDimensional(OneDSimulation)
+    OneDimensional(OneDSimulation),
 }

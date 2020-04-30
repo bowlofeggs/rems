@@ -18,38 +18,45 @@ use std::fs::File;
 use std::io::BufReader;
 use std::process::Command;
 
-use inline_python::python;
 use inline_python::pyo3::prelude::*;
+use inline_python::python;
 use rayon::prelude::*;
 use serde::Deserialize;
 
 use crate::config;
-
 
 pub struct Universe<'a> {
     config: &'a config::OneDSimulation,
     pub ex: Vec<f64>,
     pub hy: Vec<f64>,
     oscilloscopes: Vec<Oscilloscope<'a>>,
-    signals: Vec<Signal<'a>>
+    signals: Vec<Signal<'a>>,
 }
 
-
 impl<'a> Universe<'a> {
-
-    pub fn in_the_beginning(config: &'a config::OneDSimulation)
-            -> Result<Universe<'a>, Box<dyn error::Error>> {
+    pub fn in_the_beginning(
+        config: &'a config::OneDSimulation,
+    ) -> Result<Universe<'a>, Box<dyn error::Error>> {
         let ex = (0..config.size).map(|_| 0.0).collect::<Vec<f64>>();
         let hy = (0..config.size).map(|_| 0.0).collect::<Vec<f64>>();
 
-        let oscilloscopes = config.oscilloscopes.iter().map(
-            |c| Oscilloscope::new(c)).collect::<Vec<_>>();
-        let mut signals: Vec<Signal> = vec!();
+        let oscilloscopes = config
+            .oscilloscopes
+            .iter()
+            .map(|c| Oscilloscope::new(c))
+            .collect::<Vec<_>>();
+        let mut signals: Vec<Signal> = vec![];
         for c in &config.signals {
             signals.push(Signal::new(&c)?);
         }
 
-        Ok(Universe{config, ex, hy, oscilloscopes, signals})
+        Ok(Universe {
+            config,
+            ex,
+            hy,
+            oscilloscopes,
+            signals,
+        })
     }
 
     pub fn let_there_be_light(&mut self) {
@@ -91,16 +98,17 @@ impl<'a> Universe<'a> {
     }
 }
 
-
 pub struct Oscilloscope<'a> {
     config: &'a config::Oscilloscope,
-    snapshots: Vec<Snapshot>
+    snapshots: Vec<Snapshot>,
 }
-
 
 impl<'b> Oscilloscope<'b> {
     pub fn new(config: &config::Oscilloscope) -> Oscilloscope {
-        Oscilloscope{config, snapshots: vec![]}
+        Oscilloscope {
+            config,
+            snapshots: vec![],
+        }
     }
 
     pub fn close(&self) {
@@ -108,7 +116,10 @@ impl<'b> Oscilloscope<'b> {
             config::Oscilloscope::Movie(movie) => {
                 let args = format!(
                     "-r {framerate} -f image2 -i t%04d.png -vcodec libx264 -crf 25 \
-                    -pix_fmt yuv420p {path}", framerate=movie.framerate, path=movie.path);
+                    -pix_fmt yuv420p {path}",
+                    framerate = movie.framerate,
+                    path = movie.path
+                );
                 let mut ffmpeg = Command::new("ffmpeg");
                 ffmpeg.args(args.split(' '));
                 let output = ffmpeg.output().expect("Failed to spawn ffmpeg");
@@ -162,12 +173,20 @@ impl<'b> Oscilloscope<'b> {
     }
 
     pub fn snapshot<'a>(
-            &mut self, thread_scope: &rayon::Scope<'a>, timestamp: u64, ex: &[f64],
-            hy: &[f64]) {
+        &mut self,
+        thread_scope: &rayon::Scope<'a>,
+        timestamp: u64,
+        ex: &[f64],
+        hy: &[f64],
+    ) {
         match self.config {
             config::Oscilloscope::Movie(movie) => {
                 if timestamp % (movie.graph_period as u64) == 0 {
-                    let snapshot = Snapshot{timestamp, ex: ex.to_owned(), hy: hy.to_owned()};
+                    let snapshot = Snapshot {
+                        timestamp,
+                        ex: ex.to_owned(),
+                        hy: hy.to_owned(),
+                    };
                     self.snapshots.push(snapshot);
                     if self.snapshots.len() > movie.snapshot_buffer_len as usize {
                         self.flush(thread_scope);
@@ -178,7 +197,6 @@ impl<'b> Oscilloscope<'b> {
     }
 }
 
-
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SignalBSON {
@@ -186,12 +204,10 @@ pub struct SignalBSON {
     _version: i64,
 }
 
-
 pub struct Signal<'a> {
     pub config: &'a config::Signal,
-    pub bson: SignalBSON
+    pub bson: SignalBSON,
 }
-
 
 impl<'b> Signal<'b> {
     pub fn new(config: &config::Signal) -> Result<Signal, Box<dyn error::Error>> {
@@ -200,10 +216,9 @@ impl<'b> Signal<'b> {
         let bson = bson::decode_document(&mut reader)?;
         let bson: SignalBSON = bson::from_bson(bson::Bson::Document(bson))?;
 
-        Ok(Signal{bson, config})
+        Ok(Signal { bson, config })
     }
 }
-
 
 #[pyclass]
 #[derive(Clone)]
@@ -216,12 +231,17 @@ pub struct Snapshot {
     hy: Vec<f64>,
 }
 
-
 impl ToPyObject for Snapshot {
     fn to_object(&self, py: Python) -> PyObject {
         let dict = PyRefMut::new(
-            py, Snapshot{timestamp: self.timestamp, ex: self.ex.clone(), hy: self.hy.clone()})
-            .expect("Unable to build Python Snapshot");
+            py,
+            Snapshot {
+                timestamp: self.timestamp,
+                ex: self.ex.clone(),
+                hy: self.hy.clone(),
+            },
+        )
+        .expect("Unable to build Python Snapshot");
         dict.to_object(py)
     }
 }
