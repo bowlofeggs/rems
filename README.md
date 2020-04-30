@@ -6,8 +6,9 @@
 # Install
 
 ```rems``` is [available on crates.io](https://crates.io/crates/rems). You can install rems by first
-[installing Rust](https://www.rust-lang.org/tools/install), and then using Rust's ```rustup``` tool
-to install Rust nightly, and then you can use ```cargo``` to install rems:
+installing ```ffmpeg```, then [installing Rust](https://www.rust-lang.org/tools/install), and then
+using Rust's ```rustup``` tool to install Rust nightly, and then you can use ```cargo``` to install
+rems:
 
 ```
 $ rustup install nightly
