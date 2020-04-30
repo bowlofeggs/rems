@@ -1,3 +1,3 @@
 # 0.0.0
 
-* Initial release.
+* Let there be light.
