@@ -2,6 +2,10 @@
 [Finite Difference Time Domain](https://en.wikipedia.org/wiki/Finite-difference_time-domain_method)
 (FDTD) simulator written in Rust.
 
+It is capable of generating animated graphs of your simulations, like this:
+
+![1D example simulation](https://user-images.githubusercontent.com/354506/80891137-14c73400-8c90-11ea-8ffb-af5c53f03a3a.gif)
+
 
 # Install
 
