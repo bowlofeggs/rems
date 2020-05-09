@@ -34,12 +34,14 @@ use structopt::StructOpt;
 mod config;
 mod models;
 
+/// Define the CLI parameters
 #[derive(StructOpt)]
 struct Cli {
     /// A path to a simulation config
     config: String,
 }
 
+/// In the beginning, the world was public static void main…
 fn main() {
     let args = Cli::from_args();
     let simulation = config::read_config(&args.config);
@@ -64,6 +66,11 @@ fn main() {
     }
 }
 
+/// Print the error and exit, meanly.
+///
+/// # Arguments
+///
+/// * `error` - The error we sadly encountered.
 fn handle_error(error: Box<dyn error::Error>) {
     println!("{}", error);
     std::process::exit(1);

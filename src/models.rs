@@ -27,15 +27,30 @@ use tempfile::tempdir;
 
 use crate::config;
 
+/// The known universe.
 pub struct Universe<'a> {
+    /// Store a reference to our simulation configuration for easy access.
     config: &'a config::OneDSimulation,
+    /// The electric field for the entire universe.
     pub ex: Vec<f64>,
+    /// The magnetic field for the entire universe.
     pub hy: Vec<f64>,
+    /// A list of oscilloscope objects that are capturing data about our universe.
     oscilloscopes: Vec<Oscilloscope<'a>>,
+    /// A list of signals that are generating input into our universe.
     signals: Vec<Signal<'a>>,
 }
 
 impl<'a> Universe<'a> {
+    /// Like new() for most Rust objects, but Biblical.
+    ///
+    /// # Arguments
+    ///
+    /// * `config` - A 1D configuration to define the Universe that will be created.
+    ///
+    /// # Returns
+    ///
+    /// A Universe, or an Error if one of the signals cannot be read.
     pub fn in_the_beginning(
         config: &'a config::OneDSimulation,
     ) -> Result<Universe<'a>, Box<dyn error::Error>> {
@@ -61,52 +76,74 @@ impl<'a> Universe<'a> {
         })
     }
 
+    /// Run the simulation.
     pub fn let_there_be_light(&mut self) {
+        // We use a rayon scope so that we can wait for all graphs to finish being made before
+        // exiting the function.
         rayon::scope(|thread_scope| {
             let ex = &mut self.ex;
             let hy = &mut self.hy;
 
             for t in 0..self.config.time {
+                // Update the electric field based on the current values in the magnetic field.
                 ex.par_iter_mut().enumerate().for_each(|(i, value)| {
                     if i != 0 {
                         *value += 0.5 * (hy[i - 1] - hy[i]);
                     }
                 });
 
+                // Inject the next value for each signal into the electric field.
                 for signal in &self.signals {
                     if let Some(value) = signal.bson.ex.get(t as usize) {
                         ex[signal.config.location] += value;
                     }
                 }
 
+                // Update the magnetic field based on the current values in the electric field.
                 hy.par_iter_mut().enumerate().for_each(|(i, value)| {
                     if i != ex.len() - 1 {
                         *value += 0.5 * (ex[i] - ex[i + 1]);
                     }
                 });
 
+                // Collect data about the current state of things with all of our oscilloscopes.
                 for oscilloscope in self.oscilloscopes.iter_mut() {
                     oscilloscope.snapshot(thread_scope, t, ex, hy);
                 }
             }
+            // While we still have the rayon scope, let's use it to close our all of our graph
+            // creation tasks.
             for oscilloscope in self.oscilloscopes.iter_mut() {
                 oscilloscope.flush(thread_scope);
             }
         });
 
+        // Clean up all oscilloscopes.
         for oscilloscope in self.oscilloscopes.iter_mut() {
             oscilloscope.close();
         }
     }
 }
 
+/// An Oscilloscope records data from the Universe.
 pub struct Oscilloscope<'a> {
+    /// The oscilloscope's configuration.
     config: &'a config::Oscilloscope,
+    /// A list of snapshots that the Oscilloscope has recorded.
     snapshots: Vec<Snapshot>,
     temp_dir: tempfile::TempDir,
 }
 
 impl<'b> Oscilloscope<'b> {
+    /// Create an oscilloscope based on a configuration
+    ///
+    /// # Arguments
+    ///
+    /// * `config` - The configuration for this oscilloscope.
+    ///
+    /// # Returns
+    ///
+    /// A new Oscilloscope. Congrats. Or an Error. Condolences.
     pub fn new(config: &config::Oscilloscope) -> Result<Oscilloscope, Box<dyn error::Error>> {
         let temp_dir = tempdir()?;
         Ok(Oscilloscope {
@@ -116,6 +153,7 @@ impl<'b> Oscilloscope<'b> {
         })
     }
 
+    /// Close the oscilloscope. A Movie scope will generate its movie at this step.
     pub fn close(&self) {
         match self.config {
             config::Oscilloscope::Movie(movie) => {
@@ -141,6 +179,13 @@ impl<'b> Oscilloscope<'b> {
         }
     }
 
+    /// Flush all the gathered snapshots to disk. For the movie scope, this will generate picture
+    /// files that are some of the frames for the resulting movie.
+    ///
+    /// # Arguments
+    ///
+    /// * `thread_scope` - We need a Rayon thread scope so we can launch our Python rendering tasks
+    ///   into it.
     pub fn flush<'a>(&mut self, thread_scope: &rayon::Scope<'a>) {
         match self.config {
             config::Oscilloscope::Movie(movie) => {
@@ -189,6 +234,15 @@ impl<'b> Oscilloscope<'b> {
         }
     }
 
+    /// Take a snapshot of the Universe, as per this Oscilloscope's configuration.
+    ///
+    /// # Arguments
+    ///
+    /// * `thread_scope` - We use the Rayon thread scope so that we can call flush(), which needs
+    ///   it.
+    /// * `timestamp` - The time we are taking a snapshot of.
+    /// * `ex` - A reference to the electric field we are snapshotting.
+    /// * `hy` - A reference to the magnetic field we are snapshotting.
     pub fn snapshot<'a>(
         &mut self,
         thread_scope: &rayon::Scope<'a>,
@@ -214,19 +268,33 @@ impl<'b> Oscilloscope<'b> {
     }
 }
 
+/// This struct defines the schema for the BSON file that users encode the signals in.
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SignalBSON {
+    /// The electric field values over time.
     pub ex: Vec<f64>,
+    /// The version of the BSON file. This must be 0 for now.
     _version: i64,
 }
 
+/// This struct represents a signal in space, and is a wrapper around both the configuration for
+/// the signal and the interpreted BSON data.
 pub struct Signal<'a> {
     pub config: &'a config::Signal,
     pub bson: SignalBSON,
 }
 
 impl<'b> Signal<'b> {
+    /// Initialize the signal, by opening and reading the referenced BSON data into memory.
+    ///
+    /// # Arguments
+    ///
+    /// * `config` - The configuration describing the Signal.
+    ///
+    /// # Returns
+    ///
+    /// A new signal, or an Error if the BSON file was not able to be read or was not valid.
     pub fn new(config: &config::Signal) -> Result<Signal, Box<dyn error::Error>> {
         let f = File::open(&config.path)?;
         let mut reader = BufReader::new(f);
@@ -237,18 +305,32 @@ impl<'b> Signal<'b> {
     }
 }
 
+/// A recorded snapshot of the entire electric and magnetic field at a particular time.
 #[pyclass]
 #[derive(Clone)]
 pub struct Snapshot {
+    /// The time that this snapshot records.
     #[pyo3(get)]
     timestamp: u64,
+    /// The electric field values for all of the Universe at this time.
     #[pyo3(get)]
     ex: Vec<f64>,
+    /// The magnetic field values for all of the Universe at this time.
     #[pyo3(get)]
     hy: Vec<f64>,
 }
 
 impl ToPyObject for Snapshot {
+    /// Convert the Snapshot into a Python object so that we can hand it into Python for graphing.
+    ///
+    /// # Arguments
+    ///
+    /// * `py` - The handle to the Python interpreter, needed to use the GIL.
+    ///
+    /// # Returns
+    ///
+    /// A PyObject representation of this Snapshot, which can be used in Python as a class with
+    /// attributes that access the struct's fields.
     fn to_object(&self, py: Python) -> PyObject {
         let dict = PyRefMut::new(
             py,
