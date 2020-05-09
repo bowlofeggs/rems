@@ -1,6 +1,6 @@
 [package]
 name = "rems"
-version = "0.0.0"
+version = "0.0.1"
 authors = ["Randy Barlow <randy@electronsweatshop.com>"]
 license = "GPL-3.0"
 readme = "README.md"
