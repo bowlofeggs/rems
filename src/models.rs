@@ -1,5 +1,6 @@
 /*
  * Copyright © 2019-2020 Randy Barlow
+ * Copyright © 2020 Jeremy Cline
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3 of the License.
@@ -22,6 +23,7 @@ use inline_python::pyo3::prelude::*;
 use inline_python::python;
 use rayon::prelude::*;
 use serde::Deserialize;
+use tempfile::tempdir;
 
 use crate::config;
 
@@ -43,7 +45,7 @@ impl<'a> Universe<'a> {
         let oscilloscopes = config
             .oscilloscopes
             .iter()
-            .map(|c| Oscilloscope::new(c))
+            .map(|c| Oscilloscope::new(c).unwrap())
             .collect::<Vec<_>>();
         let mut signals: Vec<Signal> = vec![];
         for c in &config.signals {
@@ -101,24 +103,32 @@ impl<'a> Universe<'a> {
 pub struct Oscilloscope<'a> {
     config: &'a config::Oscilloscope,
     snapshots: Vec<Snapshot>,
+    temp_dir: tempfile::TempDir,
 }
 
 impl<'b> Oscilloscope<'b> {
-    pub fn new(config: &config::Oscilloscope) -> Oscilloscope {
-        Oscilloscope {
+    pub fn new(config: &config::Oscilloscope) -> Result<Oscilloscope, Box<dyn error::Error>> {
+        let temp_dir = tempdir()?;
+        Ok(Oscilloscope {
             config,
             snapshots: vec![],
-        }
+            temp_dir,
+        })
     }
 
     pub fn close(&self) {
         match self.config {
             config::Oscilloscope::Movie(movie) => {
                 let args = format!(
-                    "-r {framerate} -f image2 -i t%04d.png -vcodec libx264 -crf 25 \
+                    "-r {framerate} -f image2 -i {temp_dir}/t%04d.png -vcodec libx264 -crf 25 \
                     -pix_fmt yuv420p {path}",
                     framerate = movie.framerate,
-                    path = movie.path
+                    temp_dir = self
+                        .temp_dir
+                        .path()
+                        .to_str()
+                        .expect("Temporary directory path is invalid"),
+                    path = movie.path,
                 );
                 let mut ffmpeg = Command::new("ffmpeg");
                 ffmpeg.args(args.split(' '));
@@ -138,9 +148,16 @@ impl<'b> Oscilloscope<'b> {
                 let range = movie.range;
                 let resolution = movie.resolution;
                 let snapshots = self.snapshots.clone();
+                let temp_dir = self
+                    .temp_dir
+                    .path()
+                    .to_str()
+                    .expect("Temporary directory path is invalid")
+                    .to_owned();
                 thread_scope.spawn(move |_| {
                     python! {
                         import multiprocessing
+                        import os
 
                         from matplotlib import pyplot
 
@@ -158,7 +175,7 @@ impl<'b> Oscilloscope<'b> {
                                 pyplot.ylabel("magnitude")
                                 pyplot.axis([0, len(snapshot.ex), -'range, 'range])
                                 ax.legend()
-                                pyplot.savefig(f"t{int(t/period):04}.png", dpi=my_dpi)
+                                pyplot.savefig(os.path.join('temp_dir, f"t{int(t/period):04}.png"), dpi=my_dpi)
                                 pyplot.close(fig)
 
 
