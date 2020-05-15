@@ -332,7 +332,7 @@ impl ToPyObject for Snapshot {
     /// A PyObject representation of this Snapshot, which can be used in Python as a class with
     /// attributes that access the struct's fields.
     fn to_object(&self, py: Python) -> PyObject {
-        let dict = PyRefMut::new(
+        let dict = PyCell::new(
             py,
             Snapshot {
                 timestamp: self.timestamp,
