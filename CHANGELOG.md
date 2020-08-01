@@ -1,3 +1,8 @@
+# 0.0.2
+
+* [#16](https://github.com/bowlofeggs/rems/pull/16): Update dependencies.
+
+
 # 0.0.1
 
 * [#9](https://github.com/bowlofeggs/rems/pull/9): Move the configuration file docs to the README.
