@@ -298,7 +298,7 @@ impl<'b> Signal<'b> {
     pub fn new(config: &config::Signal) -> Result<Signal, Box<dyn error::Error>> {
         let f = File::open(&config.path)?;
         let mut reader = BufReader::new(f);
-        let bson = bson::decode_document(&mut reader)?;
+        let bson = bson::Document::from_reader(&mut reader)?;
         let bson: SignalBSON = bson::from_bson(bson::Bson::Document(bson))?;
 
         Ok(Signal { bson, config })
