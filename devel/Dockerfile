@@ -17,6 +17,9 @@ RUN cd /devel && cargo build
 RUN cd /devel && cargo test
 # This way we can cache all the doc dependencies
 RUN cd /devel && cargo doc
+# This is needed for cargo-audit
+RUN dnf install -y openssl-devel
+RUN cargo install cargo-audit
 # This is useful for finding all the licenses of the bundled libraries
 RUN cargo install cargo-license
 
