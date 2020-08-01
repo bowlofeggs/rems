@@ -13,7 +13,7 @@ categories = ["command-line-utilities", "science", "simulation"]
 edition = "2018"
 
 [dependencies]
-bson = "0.13"
+bson = "1"
 inline-python = "0.6"
 pyo3 = "0.11"
 rayon = "1.3"
