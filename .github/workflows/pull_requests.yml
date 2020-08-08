@@ -26,6 +26,22 @@ jobs:
         with:
           command: build
 
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: nightly
+            override: true
+      - name: Install cargo-audit
+        run: |
+          cargo install cargo-audit
+      - uses: actions-rs/cargo@v1
+        with:
+          command: audit
+
   clippy:
     runs-on: ubuntu-latest
     steps:
