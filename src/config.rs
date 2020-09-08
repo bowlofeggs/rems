@@ -21,6 +21,9 @@ use std::io::BufReader;
 
 use serde::Deserialize;
 
+// This allows us to namespace 1D configuration models.
+pub mod d1;
+
 /// Return the user's config as a Simulation.
 ///
 /// # Arguments
@@ -38,86 +41,6 @@ pub fn read_config(config_file_path: &str) -> Result<Simulation, Box<dyn error::
     Ok(config)
 }
 
-// Serde requires the use of functions to define defaults on struct fields, so these functions
-// define those defaults.
-fn default_framerate() -> u16 {
-    60
-}
-fn default_graph_period() -> u16 {
-    16
-}
-fn default_range() -> f32 {
-    1.0
-}
-fn default_resolution() -> (u16, u16) {
-    (1920, 1080)
-}
-fn default_snapshot_buffer_len() -> u16 {
-    47
-}
-
-/// The Movie allows the user to request that a video be made of the E and H values for the entire
-/// simulation space across all of time.
-#[derive(PartialEq, Deserialize)]
-#[serde(deny_unknown_fields)]
-#[serde(rename_all = "snake_case")]
-pub struct Movie {
-    /// The framerate for the resulting movie, in Hz.
-    #[serde(default = "default_framerate")]
-    pub framerate: u16,
-    /// How often to capture a frame for the video, in simulation time steps.
-    #[serde(default = "default_graph_period")]
-    pub graph_period: u16,
-    /// How large of a magnitude to graph on the y-axis.
-    #[serde(default = "default_range")]
-    pub range: f32,
-    /// Where to store the movie at the end of the simulation.
-    pub path: String,
-    /// What resolution to use for the movie, in pixels.
-    #[serde(default = "default_resolution")]
-    pub resolution: (u16, u16),
-    /// How many snapshots to buffer in memory before starting a child process to render them into
-    /// movie frames.
-    #[serde(default = "default_snapshot_buffer_len")]
-    pub snapshot_buffer_len: u16,
-}
-
-/// An Oscilloscope is a tool for the user to request for simulation data to be captured.
-#[derive(PartialEq, Deserialize)]
-#[serde(deny_unknown_fields)]
-#[serde(rename_all = "snake_case")]
-#[serde(tag = "type")]
-pub enum Oscilloscope {
-    /// Record a movie of the simulation.
-    Movie(Movie),
-}
-
-/// Define a signal to place into the simulation space.
-#[derive(PartialEq, Deserialize)]
-#[serde(deny_unknown_fields)]
-#[serde(rename_all = "snake_case")]
-pub struct Signal {
-    /// Where in the simulation space to place the signal.
-    pub location: usize,
-    /// A path to a BSON file on disk that contains the signal values.
-    pub path: String,
-}
-
-/// Define a configuration for a 1D simulation.
-#[derive(PartialEq, Deserialize)]
-#[serde(deny_unknown_fields)]
-#[serde(rename_all = "snake_case")]
-pub struct OneDSimulation {
-    /// A list of oscilloscopes to measure data in the simulation.
-    pub oscilloscopes: Vec<Oscilloscope>,
-    /// A list of signals to place into the simulation space.
-    pub signals: Vec<Signal>,
-    /// How many units large the universe is.
-    pub size: u64,
-    /// How long the universe will last until it all comes to an end.
-    pub time: u64,
-}
-
 /// Define a configuration for a simulation.
 #[derive(PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -126,5 +49,5 @@ pub struct OneDSimulation {
 pub enum Simulation {
     /// Define a configuration for a 1D simulation.
     #[serde(rename(deserialize = "1"))]
-    OneDimensional(OneDSimulation),
+    OneDimensional(d1::Simulation),
 }

@@ -30,7 +30,7 @@ use crate::config;
 /// The known universe.
 pub struct Universe<'a> {
     /// Store a reference to our simulation configuration for easy access.
-    config: &'a config::OneDSimulation,
+    config: &'a config::d1::Simulation,
     /// The electric field for the entire universe.
     pub ex: Vec<f64>,
     /// The magnetic field for the entire universe.
@@ -52,7 +52,7 @@ impl<'a> Universe<'a> {
     ///
     /// A Universe, or an Error if one of the signals cannot be read.
     pub fn in_the_beginning(
-        config: &'a config::OneDSimulation,
+        config: &'a config::d1::Simulation,
     ) -> Result<Universe<'a>, Box<dyn error::Error>> {
         let ex = (0..config.size).map(|_| 0.0).collect::<Vec<f64>>();
         let hy = (0..config.size).map(|_| 0.0).collect::<Vec<f64>>();
@@ -128,7 +128,7 @@ impl<'a> Universe<'a> {
 /// An Oscilloscope records data from the Universe.
 pub struct Oscilloscope<'a> {
     /// The oscilloscope's configuration.
-    config: &'a config::Oscilloscope,
+    config: &'a config::d1::Oscilloscope,
     /// A list of snapshots that the Oscilloscope has recorded.
     snapshots: Vec<Snapshot>,
     temp_dir: tempfile::TempDir,
@@ -144,7 +144,7 @@ impl<'b> Oscilloscope<'b> {
     /// # Returns
     ///
     /// A new Oscilloscope. Congrats. Or an Error. Condolences.
-    pub fn new(config: &config::Oscilloscope) -> Result<Oscilloscope, Box<dyn error::Error>> {
+    pub fn new(config: &config::d1::Oscilloscope) -> Result<Oscilloscope, Box<dyn error::Error>> {
         let temp_dir = tempdir()?;
         Ok(Oscilloscope {
             config,
@@ -156,7 +156,7 @@ impl<'b> Oscilloscope<'b> {
     /// Close the oscilloscope. A Movie scope will generate its movie at this step.
     pub fn close(&self) {
         match self.config {
-            config::Oscilloscope::Movie(movie) => {
+            config::d1::Oscilloscope::Movie(movie) => {
                 let args = format!(
                     "-r {framerate} -f image2 -i {temp_dir}/t%04d.png -vcodec libx264 -crf 25 \
                     -pix_fmt yuv420p {path}",
@@ -188,7 +188,7 @@ impl<'b> Oscilloscope<'b> {
     ///   into it.
     pub fn flush<'a>(&mut self, thread_scope: &rayon::Scope<'a>) {
         match self.config {
-            config::Oscilloscope::Movie(movie) => {
+            config::d1::Oscilloscope::Movie(movie) => {
                 let graph_period = movie.graph_period;
                 let range = movie.range;
                 let resolution = movie.resolution;
@@ -251,7 +251,7 @@ impl<'b> Oscilloscope<'b> {
         hy: &[f64],
     ) {
         match self.config {
-            config::Oscilloscope::Movie(movie) => {
+            config::d1::Oscilloscope::Movie(movie) => {
                 if timestamp % (movie.graph_period as u64) == 0 {
                     let snapshot = Snapshot {
                         timestamp,
@@ -281,7 +281,7 @@ pub struct SignalBSON {
 /// This struct represents a signal in space, and is a wrapper around both the configuration for
 /// the signal and the interpreted BSON data.
 pub struct Signal<'a> {
-    pub config: &'a config::Signal,
+    pub config: &'a config::d1::Signal,
     pub bson: SignalBSON,
 }
 
@@ -295,7 +295,7 @@ impl<'b> Signal<'b> {
     /// # Returns
     ///
     /// A new signal, or an Error if the BSON file was not able to be read or was not valid.
-    pub fn new(config: &config::Signal) -> Result<Signal, Box<dyn error::Error>> {
+    pub fn new(config: &config::d1::Signal) -> Result<Signal, Box<dyn error::Error>> {
         let f = File::open(&config.path)?;
         let mut reader = BufReader::new(f);
         let bson = bson::Document::from_reader(&mut reader)?;
