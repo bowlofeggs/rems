@@ -48,37 +48,37 @@ options:
 
 ```
 ---
-## How many dimensions we have in space. Right now, only 1 is supported.
+# How many dimensions we have in space. Right now, only 1 is supported.
 dimensions: 1
-## Define a list of signals
+# Define a list of signals
 signals:
-  ## This signal is at location 600 in space
+  # This signal is at location 600 in space
   - location: 600
-    ## Read this path to get the signal. See below for a description of this file.
+    # Read this path to get the signal. See below for a description of this file.
     path: examples/1d_signal.bson
-## Define how large the universe should be, in cells
+# Define how large the universe should be, in cells
 size: 1920
-## Define how many time steps the simulation should run for
+# Define how many time steps the simulation should run for
 time: 32768
-## This is a list of oscilloscopes, or outputs for your simulation. Right now, only the movie
-## type is supported, but one could imagine other types added in the future.
+# This is a list of oscilloscopes, or outputs for your simulation. Right now, only the movie
+# type is supported, but one could imagine other types added in the future.
 oscilloscopes:
   - type: movie
     # How large of a magnitude to use for the y-axis on the graphs
-    ## range: 1.0
-    ## The path to write the movie to
+    # range: 1.0
+    # The path to write the movie to
     path: examples/1d_simulation.mp4
-    ## The framerate of the resulting movie, in Hz
-    ## framerate: 60
-    ## How often to generate a graph in simulation time steps
-    ## graph_period: 16
-    ## The resolution you desire for the resulting video, expressed as an array of two integers
-    ## resolution:
-    ##   - 1920
-    ##   - 1080
-    ## How many snapshots to buffer in memory before handing them off to a Python subprocess to
-    ## generate graphs out of them.
-    ## snapshot_buffer_len: 47
+    # The framerate of the resulting movie, in Hz
+    # framerate: 60
+    # How often to generate a graph in simulation time steps
+    # graph_period: 16
+    # The resolution you desire for the resulting video, expressed as an array of two integers
+    # resolution:
+    #   - 1920
+    #   - 1080
+    # How many snapshots to buffer in memory before handing them off to a Python subprocess to
+    # generate graphs out of them.
+    # snapshot_buffer_len: 47
 ```
 
 # The signal BSON file
