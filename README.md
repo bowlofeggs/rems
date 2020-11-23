@@ -112,10 +112,14 @@ ex:
 
 If you would like to contribute to rems, send me a patch!
 
-There are a few scripts in the ```devel/``` folder that are handy for development, if you have
-podman on your system. To get started with them, run ```build.sh``` (root is not required) -
-it will build a container on your system with podman that gathers and compiles rems's dependencies.
-Once this container is built, you can run rems's tests with ```cargo.sh test```, and you can run
-any other cargo command with ```cargo.sh``` (it accepts cargo's parameters).
+There is a Makefile in the ```devel/``` folder that is handy for development, if you have
+podman on your system. It has three targets: `build`, `shell`, and `test`. `build` will build a
+rems container, `shell` will drop you into bash inside the container, and `test` will execute the
+tests. For example, you can run the tests like this:
+
+```
+# Note that root is not required.
+$ make -C devel test
+```
 
 Happy hacking!

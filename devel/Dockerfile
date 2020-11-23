@@ -9,14 +9,14 @@ RUN curl -s https://sh.rustup.rs -sSf | sh -s -- -y
 RUN source /root/.cargo/env
 ENV PATH /root/.cargo/bin:$PATH
 RUN rustup install nightly
-RUN cd /devel && rustup override set nightly
+RUN cd /project && rustup override set nightly
 
 # This way we can cache all the build dependencies
-RUN cd /devel && cargo build
+RUN cd /project && cargo build
 # This way we can cache all the development dependencies
-RUN cd /devel && cargo test
+RUN cd /project && cargo test
 # This way we can cache all the doc dependencies
-RUN cd /devel && cargo doc
+RUN cd /project && cargo doc
 # This is needed for cargo-audit
 RUN dnf install -y openssl-devel
 RUN cargo install cargo-audit
