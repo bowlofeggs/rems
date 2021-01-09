@@ -1,4 +1,5 @@
 ![CI](https://github.com/bowlofeggs/rems/workflows/CI/badge.svg?branch=master)
+![Release](https://github.com/bowlofeggs/rems/workflows/Release/badge.svg?branch=master)
 
 ```rems``` (Rust ElectroMagnetic Simulator) is a
 [Finite Difference Time Domain](https://en.wikipedia.org/wiki/Finite-difference_time-domain_method)

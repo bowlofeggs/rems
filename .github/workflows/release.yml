@@ -1,0 +1,82 @@
+---
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+      - name: Run build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+      - name: Run cargo doc
+        uses: actions-rs/cargo@v1
+        with:
+          command: doc
+          args: --no-deps
+      - name: Compress rustdoc output
+        run: |
+          tar cvjf target/rust_docs.tar.bz2 target/doc
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload build
+        id: upload_build
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/release/rems
+          asset_name: rems-gnu-linux-x86_64
+          asset_content_type: application/octet-stream
+      - name: Upload Rust docs
+        id: upload_rust_docs
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/rust_docs.tar.bz2
+          asset_name: rust_docs.tar.bz2
+          asset_content_type: application/octet-stream
+      - name: Upload CHANGELOG.md
+        id: upload_changelog
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: CHANGELOG.md
+          asset_name: CHANGELOG.md
+          asset_content_type: text/markdown
+      - name: Upload README.md
+        id: upload_readme
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: README.md
+          asset_name: README.md
+          asset_content_type: text/markdown
+      - name: Publish to crates.io
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          cargo publish
