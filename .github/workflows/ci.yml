@@ -11,90 +11,54 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: |
-          sudo apt install -y python3.7-dev
-      - name: Install latest nightly
-        uses: actions-rs/toolchain@v1
-        with:
-            toolchain: nightly
-            override: true
-            components: rustfmt, clippy
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-
-  audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install latest nightly
-        uses: actions-rs/toolchain@v1
-        with:
-            toolchain: nightly
-            override: true
-      - name: Install cargo-audit
-        run: |
-          cargo install cargo-audit
-      - uses: actions-rs/cargo@v1
-        with:
-          command: audit
-
-  clippy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: |
-          sudo apt install -y python3.7-dev
-      - name: Install latest nightly
-        uses: actions-rs/toolchain@v1
-        with:
-            toolchain: nightly
-            override: true
-            components: rustfmt, clippy
-      - uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-targets --all-features -- -D warnings
-
-  doc:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install latest nightly
-        uses: actions-rs/toolchain@v1
-        with:
-            toolchain: nightly
-            override: true
-            components: rustfmt, clippy
-      - uses: actions-rs/cargo@v1
-        with:
-          command: doc
-
-  fmt:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/cargo@v1
+      - name: Check out branch
+        uses: actions/checkout@v2
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: -- --check -l -v
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+      - name: Install OS dependencies
+        run: |
+          sudo apt install -y python3.7-dev
       - name: Install latest nightly
         uses: actions-rs/toolchain@v1
         with:
             toolchain: nightly
             override: true
             components: rustfmt, clippy
-      - uses: actions-rs/cargo@v1
+      - name: Run audit check
+        uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cache compilation assets
+        uses: actions/cache@v2
+        env:
+          cache-name: rust
+        with:
+          path: |
+            target
+            /usr/share/rust/.cargo
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
+      - name: Run cargo build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+      - name: Run cargo clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-targets --all-features -- -D warnings
+      - name: Run cargo test
+        uses: actions-rs/cargo@v1
         with:
           command: test
+      - name: Run cargo doc
+        uses: actions-rs/cargo@v1
+        with:
+          command: doc
