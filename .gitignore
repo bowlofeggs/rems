@@ -1,5 +1,6 @@
 **/*.rs.bk
 *.swp
+.cache
 .mypy_cache
 /target
 examples/1d_signal.bson

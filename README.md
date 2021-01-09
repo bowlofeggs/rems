@@ -116,14 +116,12 @@ ex:
 
 If you would like to contribute to rems, send me a patch!
 
-There is a Makefile in the ```devel/``` folder that is handy for development, if you have
-podman on your system. It has three targets: `build`, `shell`, and `test`. `build` will build a
-rems container, `shell` will drop you into bash inside the container, and `test` will execute the
-tests. For example, you can run the tests like this:
+There is a Makefile that is handy for development if you have podman on your system. It's default
+target is a help that shows the various targets that are available.
 
 ```
 # Note that root is not required.
-$ make -C devel test
+$ make check
 ```
 
 Happy hacking!
