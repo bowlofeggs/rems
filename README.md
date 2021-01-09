@@ -1,3 +1,4 @@
+![Audit](https://github.com/bowlofeggs/rems/workflows/Audit/badge.svg?branch=master)
 ![CI](https://github.com/bowlofeggs/rems/workflows/CI/badge.svg?branch=master)
 ![Release](https://github.com/bowlofeggs/rems/workflows/Release/badge.svg?branch=master)
 
