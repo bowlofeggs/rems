@@ -12,6 +12,15 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v2
+      - name: Install OS dependencies
+        run: |
+          sudo apt install -y python3.7-dev
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: nightly
+            override: true
+            components: rustfmt, clippy
       - name: Run build
         uses: actions-rs/cargo@v1
         with:
