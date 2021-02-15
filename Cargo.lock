@@ -265,7 +265,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7c40f85572d3892f1cc748cb3645dc22bfc5763526936a01e30053906f78adcc"
 dependencies = [
  "inline-python-macros",
- "pyo3",
+ "pyo3 0.11.1",
 ]
 
 [[package]]
@@ -276,7 +276,7 @@ checksum = "858dc57716ba6cdfa977204abc227bff16d82f5110b930a6fc488c4481a1c7c0"
 dependencies = [
  "libc",
  "proc-macro2",
- "pyo3",
+ "pyo3 0.11.1",
  "quote",
 ]
 
@@ -477,34 +477,45 @@ version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9ca8710ffa8211c9a62a8a3863c4267c710dc42a82a7fd29c97de465d7ea6b7d"
 dependencies = [
+ "libc",
+ "parking_lot",
+]
+
+[[package]]
+name = "pyo3"
+version = "0.13.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4837b8e8e18a102c23f79d1e9a110b597ea3b684c95e874eb1ad88f8683109c3"
+dependencies = [
+ "cfg-if",
  "ctor",
  "indoc",
  "inventory",
  "libc",
  "parking_lot",
  "paste",
- "pyo3cls",
+ "pyo3-macros",
  "unindent",
 ]
 
 [[package]]
-name = "pyo3-derive-backend"
-version = "0.11.1"
+name = "pyo3-macros"
+version = "0.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "58ad070bf6967b0d29ea74931ffcf9c6bbe8402a726e9afbeafadc0a287cc2b3"
+checksum = "a47f2c300ceec3e58064fd5f8f5b61230f2ffd64bde4970c81fdd0563a2db1bb"
 dependencies = [
- "proc-macro2",
+ "pyo3-macros-backend",
  "quote",
  "syn",
 ]
 
 [[package]]
-name = "pyo3cls"
-version = "0.11.1"
+name = "pyo3-macros-backend"
+version = "0.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c3fa17e1ea569d0bf3b7c00f2a9eea831ca05e55dd76f1794c541abba1c64baa"
+checksum = "87b097e5d84fcbe3e167f400fbedd657820a375b034c78bd852050749a575d66"
 dependencies = [
- "pyo3-derive-backend",
+ "proc-macro2",
  "quote",
  "syn",
 ]
@@ -654,7 +665,7 @@ version = "0.0.3"
 dependencies = [
  "bson",
  "inline-python",
- "pyo3",
+ "pyo3 0.13.2",
  "rayon",
  "serde",
  "serde_yaml",
