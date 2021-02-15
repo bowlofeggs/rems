@@ -271,7 +271,7 @@ impl<'b> Oscilloscope<'b> {
 /// This struct defines the schema for the BSON file that users encode the signals in.
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct SignalBSON {
+pub struct SignalBson {
     /// The electric field values over time.
     pub ex: Vec<f64>,
     /// The version of the BSON file. This must be 0 for now.
@@ -282,7 +282,7 @@ pub struct SignalBSON {
 /// the signal and the interpreted BSON data.
 pub struct Signal<'a> {
     pub config: &'a config::d1::Signal,
-    pub bson: SignalBSON,
+    pub bson: SignalBson,
 }
 
 impl<'b> Signal<'b> {
@@ -299,7 +299,7 @@ impl<'b> Signal<'b> {
         let f = File::open(&config.path)?;
         let mut reader = BufReader::new(f);
         let bson = bson::Document::from_reader(&mut reader)?;
-        let bson: SignalBSON = bson::from_bson(bson::Bson::Document(bson))?;
+        let bson: SignalBson = bson::from_bson(bson::Bson::Document(bson))?;
 
         Ok(Signal { bson, config })
     }
