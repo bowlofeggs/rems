@@ -1,3 +1,8 @@
+# 0.0.4
+
+* Dependency updates.
+
+
 # 0.0.3
 
 * [#30](https://github.com/bowlofeggs/rems/pull/30): RUSTSEC-2021-0003: Update to smallvec 1.6.1
