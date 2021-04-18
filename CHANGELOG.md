@@ -1,3 +1,9 @@
+# 0.0.5
+
+* Update for new clippy lints.
+* Update dependencies.
+
+
 # 0.0.4
 
 * Dependency updates.
