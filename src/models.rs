@@ -301,7 +301,7 @@ impl<'b> Signal<'b> {
         let bson = bson::Document::from_reader(&mut reader)?;
         let bson: SignalBson = bson::from_bson(bson::Bson::Document(bson))?;
 
-        Ok(Signal { bson, config })
+        Ok(Signal { config, bson })
     }
 }
 
