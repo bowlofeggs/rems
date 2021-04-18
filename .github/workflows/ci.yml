@@ -23,7 +23,7 @@ jobs:
           args: -- --check -l -v
       - name: Install OS dependencies
         run: |
-          sudo apt install -y python3.7-dev
+          sudo apt install -y python3.8-dev
       - name: Install latest nightly
         uses: actions-rs/toolchain@v1
         with:
