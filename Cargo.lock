@@ -256,23 +256,23 @@ dependencies = [
 
 [[package]]
 name = "inline-python"
-version = "0.6.0"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c40f85572d3892f1cc748cb3645dc22bfc5763526936a01e30053906f78adcc"
+checksum = "c178e725a9d7a2cd53fedcc0411424c48b240f7d7416a4803a46381a0ef8788d"
 dependencies = [
  "inline-python-macros",
- "pyo3",
+ "pyo3 0.14.1",
 ]
 
 [[package]]
 name = "inline-python-macros"
-version = "0.5.3"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "858dc57716ba6cdfa977204abc227bff16d82f5110b930a6fc488c4481a1c7c0"
+checksum = "7156c4a14ca399598b2a2c5d26d8c421721661445a1c22e906d3aa77952610bc"
 dependencies = [
  "libc",
  "proc-macro2",
- "pyo3",
+ "pyo3 0.14.1",
  "quote",
 ]
 
@@ -379,6 +379,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "once_cell"
+version = "1.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "692fcb63b64b1758029e0a96ee63e049ce8c5948587f2f7208df04625e5f6b56"
+
+[[package]]
 name = "parking_lot"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -481,6 +487,27 @@ dependencies = [
  "paste",
  "pyo3cls",
  "unindent",
+]
+
+[[package]]
+name = "pyo3"
+version = "0.14.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "338f7f3701e11fd7f76508c91fbcaabc982564bcaf4d1ca7e1574ff2b4778aec"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "parking_lot",
+ "pyo3-build-config",
+]
+
+[[package]]
+name = "pyo3-build-config"
+version = "0.14.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dcb2e98cc9ccc83d4f7115c8f925e0057e88c8d324b1bc4c2db4a7270c06ac9d"
+dependencies = [
+ "once_cell",
 ]
 
 [[package]]
@@ -644,7 +671,7 @@ version = "0.0.6"
 dependencies = [
  "bson",
  "inline-python",
- "pyo3",
+ "pyo3 0.11.1",
  "rayon",
  "serde",
  "serde_yaml",
