@@ -64,7 +64,7 @@ impl<'a> Universe<'a> {
             .collect::<Vec<_>>();
         let mut signals: Vec<Signal> = vec![];
         for c in &config.signals {
-            signals.push(Signal::new(&c)?);
+            signals.push(Signal::new(c)?);
         }
 
         Ok(Universe {
