@@ -31,9 +31,11 @@ jobs:
             override: true
             components: rustfmt, clippy
       - name: Run audit check
-        uses: actions-rs/audit-check@v1
+        uses: actions-rs/cargo@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          command: audit
+          # Neither of these has a fix available, so we will ignore them for now.
+          args: --ignore RUSTSEC-2020-0071 --ignore RUSTSEC-2020-0159
       - name: Cache compilation assets
         uses: actions/cache@v2
         env:

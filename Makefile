@@ -15,7 +15,8 @@ help:  ## Show this help
 check: fmt audit build clippy test doc  ## Run the full set of CI checks
 
 audit: container  ## Run cargo audit
-	$(podman_run) cargo audit
+	# Neither of these has a fix available, so we will ignore them for now.
+	$(podman_run) cargo audit --ignore RUSTSEC-2020-0071 --ignore RUSTSEC-2020-0159
 
 build: container  ## Run cargo build
 	$(podman_run) cargo build
