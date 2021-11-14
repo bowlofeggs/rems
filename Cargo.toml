@@ -10,7 +10,7 @@ description = """\
               A finite difference time domain (FDTD) electromagnetic simulator."""
 keywords = ["fdtd", "simulator", "electromagnetism", "field", "maxwell"]
 categories = ["command-line-utilities", "science", "simulation"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 bson = "2"

@@ -215,12 +215,12 @@ impl<'b> Oscilloscope<'b> {
                                 fig, ax = pyplot.subplots(figsize=('resolution[0]/my_dpi, 'resolution[1]/my_dpi))
                                 ax.plot(range(0, len(snapshot.ex)), snapshot.ex, "b", label="electric field")
                                 ax.plot(range(0, len(snapshot.hy)), snapshot.hy, "r", label="magnetic field")
-                                pyplot.title(f"Time: {t}")
+                                pyplot.title(f "Time: {t}")
                                 pyplot.xlabel("position")
                                 pyplot.ylabel("magnitude")
                                 pyplot.axis([0, len(snapshot.ex), -'range, 'range])
                                 ax.legend()
-                                pyplot.savefig(os.path.join('temp_dir, f"t{int(t/period):04}.png"), dpi=my_dpi)
+                                pyplot.savefig(os.path.join('temp_dir, f "t{int(t/period):04}.png"), dpi=my_dpi)
                                 pyplot.close(fig)
 
 
