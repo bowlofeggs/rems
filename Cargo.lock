@@ -174,9 +174,9 @@ dependencies = [
 
 [[package]]
 name = "hashbrown"
-version = "0.11.2"
+version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab5ef0d4909ef3724cc8cce6ccc8572c5c817592e9285f5464f8e86f8bd3726e"
+checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
 
 [[package]]
 name = "heck"
@@ -204,9 +204,9 @@ checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
 name = "indexmap"
-version = "1.8.1"
+version = "1.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f647032dfaa1f8b6dc29bd3edb7bbef4861b8b8007ebb118d6db284fd59f6ee"
+checksum = "10a35a97730320ffe8e2d410b5d3b69279b98d2c14bdb8b70ea89ecf7888d41e"
 dependencies = [
  "autocfg",
  "hashbrown",
@@ -283,12 +283,6 @@ name = "libc"
 version = "0.2.125"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5916d2ae698f6de9bfb891ad7a8d65c09d232dc58cc4ac433c7da3b2fd84bc2b"
-
-[[package]]
-name = "linked-hash-map"
-version = "0.5.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7fb9b38af92608140b86b693604b9ffcc5824240a484d1ecd4795bacb2fe88f3"
 
 [[package]]
 name = "lock_api"
@@ -590,9 +584,9 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
 name = "serde"
-version = "1.0.137"
+version = "1.0.140"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61ea8d54c77f8315140a05f4c7237403bf38b72704d031543aa1d16abbf517d1"
+checksum = "fc855a42c7967b7c369eb5860f7164ef1f6f81c20c7cc1141f2a604e18723b03"
 dependencies = [
  "serde_derive",
 ]
@@ -608,9 +602,9 @@ dependencies = [
 
 [[package]]
 name = "serde_derive"
-version = "1.0.137"
+version = "1.0.140"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f26faba0c3959972377d3b2d306ee9f71faee9714294e41bb777f83f88578be"
+checksum = "6f2122636b9fe3b81f1cb25099fcf2d3f542cdb1d45940d56c713158884a05da"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -631,14 +625,15 @@ dependencies = [
 
 [[package]]
 name = "serde_yaml"
-version = "0.8.24"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "707d15895415db6628332b737c838b88c598522e4dc70647e59b72312924aebc"
+checksum = "71f1e71f8401ef389565b7d16731f3cd181cccd07e2e995f37beb1fd2304ffe1"
 dependencies = [
  "indexmap",
+ "itoa",
  "ryu",
  "serde",
- "yaml-rust",
+ "unsafe-libyaml",
 ]
 
 [[package]]
@@ -736,6 +731,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "514672a55d7380da379785a4d70ca8386c8883ff7eaae877be4d2081cebe73d8"
 
 [[package]]
+name = "unsafe-libyaml"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9dc1c637311091be28e5d462c07db78081e5828da80ba22605c81c4ad6f7f813"
+
+[[package]]
 name = "uuid"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -784,12 +785,3 @@ name = "winapi-x86_64-pc-windows-gnu"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
-
-[[package]]
-name = "yaml-rust"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56c1936c4cc7a1c9ab21a1ebb602eb942ba868cbd44a99cb7cdc5892335e1c85"
-dependencies = [
- "linked-hash-map",
-]
