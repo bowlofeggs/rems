@@ -73,7 +73,7 @@ pub enum Oscilloscope {
 }
 
 /// Define a signal to place into the simulation space.
-#[derive(PartialEq, Deserialize)]
+#[derive(Eq, PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[serde(rename_all = "snake_case")]
 pub struct Signal {
