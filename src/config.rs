@@ -34,7 +34,7 @@ pub mod d1;
 ///
 /// Returns a Simulation representing the parsed config, or an Error.
 pub fn read_config(config_file_path: &str) -> Result<Simulation, Box<dyn error::Error>> {
-    let f = File::open(&config_file_path)?;
+    let f = File::open(config_file_path)?;
     let reader = BufReader::new(f);
 
     let config: Simulation = serde_yaml::from_reader(reader)?;
