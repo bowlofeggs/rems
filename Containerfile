@@ -1,7 +1,7 @@
-FROM registry.fedoraproject.org/fedora:35
+FROM registry.fedoraproject.org/fedora:37
 LABEL maintainer="Randy Barlow <randy@electronsweatshop.com>"
 
-RUN dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-35.noarch.rpm
+RUN dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-37.noarch.rpm
 RUN dnf upgrade -y
 RUN dnf install -y \
 	ffmpeg \
