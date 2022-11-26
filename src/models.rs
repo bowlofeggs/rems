@@ -186,7 +186,7 @@ impl<'b> Oscilloscope<'b> {
     ///
     /// * `thread_scope` - We need a Rayon thread scope so we can launch our Python rendering tasks
     ///   into it.
-    pub fn flush<'a>(&mut self, thread_scope: &rayon::Scope<'a>) {
+    pub fn flush(&mut self, thread_scope: &rayon::Scope<'_>) {
         match self.config {
             config::d1::Oscilloscope::Movie(movie) => {
                 let graph_period = movie.graph_period;
@@ -243,9 +243,9 @@ impl<'b> Oscilloscope<'b> {
     /// * `timestamp` - The time we are taking a snapshot of.
     /// * `ex` - A reference to the electric field we are snapshotting.
     /// * `hy` - A reference to the magnetic field we are snapshotting.
-    pub fn snapshot<'a>(
+    pub fn snapshot(
         &mut self,
-        thread_scope: &rayon::Scope<'a>,
+        thread_scope: &rayon::Scope<'_>,
         timestamp: u64,
         ex: &[f64],
         hy: &[f64],
