@@ -72,6 +72,6 @@ fn main() {
 ///
 /// * `error` - The error we sadly encountered.
 fn handle_error(error: Box<dyn error::Error>) {
-    println!("{}", error);
+    println!("{error}");
     std::process::exit(1);
 }
