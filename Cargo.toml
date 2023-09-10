@@ -14,8 +14,8 @@ edition = "2021"
 
 [dependencies]
 bson = "2"
-inline-python = "0.10"
-pyo3 = "0.17"
+inline-python = "0.12"
+pyo3 = "0.19"
 rayon = "1.6"
 serde = {version = "1.0", features = ["derive"]}
 serde_yaml = "0.9"
