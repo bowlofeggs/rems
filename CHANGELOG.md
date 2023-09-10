@@ -1,3 +1,8 @@
+# 0.0.14
+
+* RUSTSEC-2021-0139: Drop dependency on `ansi_term`.
+* Update dependencies.
+
 # 0.0.13
 
 * Update dependencies.
