@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Randy Barlow
+ * Copyright © 2019-2020, 2022-2023 Randy Barlow
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3 of the License.
@@ -29,13 +29,13 @@
 
 use std::error;
 
-use structopt::StructOpt;
+use clap::Parser;
 
 mod config;
 mod models;
 
 /// Define the CLI parameters
-#[derive(StructOpt)]
+#[derive(Parser)]
 struct Cli {
     /// A path to a simulation config
     config: String,
@@ -43,7 +43,7 @@ struct Cli {
 
 /// In the beginning, the world was public static void main…
 fn main() {
-    let args = Cli::from_args();
+    let args = Cli::parse();
     let simulation = config::read_config(&args.config);
 
     match simulation {
